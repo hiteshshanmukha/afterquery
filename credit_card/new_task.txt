@@ -1,0 +1,48 @@
+CRITIQUE PHASE
+
+Now that your task has been approved, you can move on to the critique phase! We have generated multiple broken AI implementations of your task. These broken attempts are packaged into a Task and assigned back to you to critique. Your critiques are used to generate rubrics and improve the evaluation loop, so they must be specific and evidence-based.
+
+1. Go to Critique Pipelines
+
+Look at the tasks that have been approved, and click into a task
+
+
+2. Review each task
+
+
+
+Click on each competition to see all of the critiques that need to be completed 
+Click on the blue “Open Workspace” button on the right side for each of the agents. These are faulty implementations of the task you have created. 
+Critique ALL of the files that the agent created (has an “agent” label next to it)
+Highlight the lines of code you want to critique
+Add an annotation 
+
+After you have made some annotations, a “suggest critiques” feature will appear. Your role is to review these generated annotations to ensure they are valid. You can choose to accept, edit, or reject one of the suggested critiques
+
+
+
+Once you are done annotating the code, summarize the logical flaws you found in “Overall Notes”
+
+
+Hit the “Save” button 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. “Generate Rubric” (COMING SOON)
+
+Run the Generate Rubric button on the bottom right corner. This will automatically generate a set of rubrics using your annotations
