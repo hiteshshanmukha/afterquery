@@ -27,7 +27,7 @@ The distribution is heavily skewed. Class 0 is about 49% of the data, class 4 (f
 
 ### Features
 
-31 columns from the CRSS database. All integer-coded. Most of them are categorical codes, not real numbers, even though they look numeric. Lots of columns have sentinel values like 97, 98, 99, 997, 998, 999 that mean "unknown" or "not applicable." If you treat these as actual numbers your model will do something dumb.
+28 columns from the CRSS database. All integer-coded. Most of them are categorical codes, not real numbers, even though they look numeric. Lots of columns have sentinel values like 97, 98, 99, 997, 998, 999 that mean "unknown" or "not applicable." If you treat these as actual numbers your model will do something dumb.
 
 The worst offender is `VSPD_EST` (travel speed). Over half the rows have value 998, which means "not applicable" -- speed wasn't estimated for that crash. That's not 998 mph.
 
@@ -39,13 +39,13 @@ Quick rundown of what's in the data:
 
 **Crash config:** `MAN_COLL` (manner of collision -- rear-end, head-on, angle, etc), `TYP_INT` (intersection type), `NUM_VEHICLES` (1-6), `NUM_PERSONS` (1-12)
 
-**Vehicle (for vehicle #1):** `BODY_TYP` (~67 distinct CRSS body codes -- very granular, has separate codes for 2-door sedan, 4-door sedan, hatchback, etc), `VEH_MAKE` (~69 manufacturer codes), `VEH_MODEL_YEAR`, `VEH_AGE` (= crash year minus model year), `VSPD_EST` (travel speed -- 997/998/999 are sentinels), `ROLLOVER` (0/1/2/3 plus unknowns -- **leakage, drop this**), `FIRE_EXP` (0=no, 1=fire/explosion)
+**Vehicle (for vehicle #1):** `BODY_TYP` (~67 distinct CRSS body codes -- very granular, has separate codes for 2-door sedan, 4-door sedan, hatchback, etc), `VEH_MAKE` (~69 manufacturer codes), `VEH_MODEL_YEAR`, `VEH_AGE` (= crash year minus model year), `VSPD_EST` (travel speed -- 997/998/999 are sentinels), `FIRE_EXP` (0=no, 1=fire/explosion)
 
 **Driver (vehicle #1):** `DRIVER_AGE` (998/999 = unknown), `DRIVER_SEX` (1=Male, 2=Female, 8/9 = unknown), `DRINKING` (0/1), `DRUG_INVOLVEMENT` (0/1)
 
 **Distraction:** `DISTRACTED` (~21 codes, 0=not distracted, 10=cell phone, etc)
 
-**Occupant protection:** `RESTRAINT_USE` (~14 codes), `AIRBAG_DEPLOY` (~9 codes, 20=not deployed -- **leakage, drop this**), `EJECTED` (0=no, 1=total, 2=partial -- **leakage, drop this**)
+**Occupant protection:** `RESTRAINT_USE` (~14 codes)
 
 **Weight:** `RATWGT` (float, survey sampling weight -- used in scoring, not a crash attribute)
 
@@ -86,7 +86,6 @@ python3 score_submission.py --submission-path submission.csv --solution-path sol
 
 ## Constraints
 
-- **Drop `ROLLOVER`, `AIRBAG_DEPLOY`, and `EJECTED`.** These are during-crash outcomes, not pre-crash conditions. Rollover, airbag deployment, and occupant ejection are all determined by the crash itself, so using them is target leakage.
 - **Handle sentinel codes properly.** The CRSS database uses numeric codes like 997, 998, 999 for "unknown" and "not applicable." Treating them as real numbers will wreck your model. `VSPD_EST` is the biggest one (53% of values are 998).
 - **Don't use `RATWGT` as a feature.** It's a survey design variable. The scorer needs it, your model shouldn't touch it.
 - Predictions must be integers in {0, 1, 2, 3, 4}. Floats, NaN, or out-of-range values will fail validation.

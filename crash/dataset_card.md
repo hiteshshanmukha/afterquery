@@ -52,7 +52,6 @@ https://www.nhtsa.gov/crash-data-systems/crash-report-sampling-system
 | `VEH_MODEL_YEAR` | int | Model year |
 | `VEH_AGE` | int | `CRASH_YEAR - VEH_MODEL_YEAR` |
 | `VSPD_EST` | int | Travel speed in mph. 997/998/999 = unknown/NA. ~53% are 998. |
-| `ROLLOVER` | int | Rollover occurrence (0-3). **This is a crash outcome, not a pre-crash condition -- using it is leakage.** |
 | `FIRE_EXP` | int | Fire or explosion (0=no, 1=yes) |
 | `DRIVER_AGE` | int | Age in years, 998/999=unknown |
 | `DRIVER_SEX` | int | 1=Male, 2=Female, 8/9=unknown |
@@ -60,8 +59,7 @@ https://www.nhtsa.gov/crash-data-systems/crash-report-sampling-system
 | `DRUG_INVOLVEMENT` | int | Drug involvement (0/1, 8/9=unknown) |
 | `DISTRACTED` | int | Distraction type (~21 codes, 0=not distracted) |
 | `RESTRAINT_USE` | int | Restraint/helmet type (~14 codes) |
-| `AIRBAG_DEPLOY` | int | Airbag deployment status (~9 codes, 20=not deployed) |
-| `EJECTED` | int | Ejection from vehicle (0-3, 7/8/9=unknown) |
+
 | `RATWGT` | float | CRSS survey weight (~7-800). Used in scoring, not a crash attribute. |
 | `INJ_SEV` | int | **Target.** KABCO injury severity, 0-4. Only in train.csv. |
 
@@ -73,8 +71,6 @@ Most columns are categorical codes even though they're stored as integers. The C
 
 Stratified random split (80% train / 20% test), stratified on `INJ_SEV` with `random_state=42`. No time-based split -- all five years are mixed together in both train and test. No group-based split either.
 
-Known leakage risk: **`ROLLOVER`** is a crash outcome, not a pre-crash variable. Whether the vehicle rolled over is determined during the same event that determines the injury severity. Using it as a predictor is leakage and it should be dropped.
+`ROLLOVER`, `AIRBAG_DEPLOY`, and `EJECTED` were during-crash outcomes — rollover, airbag deployment, and occupant ejection are all determined by the crash event itself, not before it. All three have been removed from the dataset.
 
 `RATWGT` is a survey design weight, not a physical crash attribute. The scorer uses it to weight the metric, but it shouldn't be used as a feature.
-
-`AIRBAG_DEPLOY` and `EJECTED` are borderline -- they're occupant outcomes that happen during the crash rather than before it. I left them in because they reflect the crash dynamics (a severe impact deploys airbags, a worse one ejects the occupant), but you could argue they're partially leaky. Something to be aware of.
